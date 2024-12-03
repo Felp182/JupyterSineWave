@@ -1,4 +1,4 @@
-# JupyterSineWave
+# pyACAStudy
 
 Python script that reads sine waves using pyACA.
 
