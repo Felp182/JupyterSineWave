@@ -1,15 +1,32 @@
-import argparse
+import pyACA
+import statistics
 import os
 import sys
+import tkinter as tk
+from tkinter import filedialog, messagebox
 
-def GetSoundFilePath():
 
-    parser = argparse.ArgumentParser(description="File Path.")
-    parser.add_argument("file_path", help= "The path to the file.")
+def normalize_path(file_path):
+    return file_path.replace("\\", "/")
 
-    args= parser.parse_args()
-    file_path = args.file_path
+def GetAudioFilePitch(file_path):
 
+    path = normalize_path(file_path)
+    if not os.path.exists(path):
+         messagebox.showerror("Error", "File does not exist")
+         return
+       
+    try:
+       [f_s,afAudioData] = pyACA.ToolReadAudio(path)
+       [vsf,t] = pyACA.computePitch("SpectralAcf", afAudioData, f_s)
+       pitch_mean = statistics.mean(vsf)
+
+       messagebox.showinfo("Audio Pitch value", f"The pitch is: {pitch_mean}")
+    except Exception as e:
+        messagebox.showerror("Error", f"An error occurred: {e}")
+
+
+def CheckSoundFilePath(file_path):
 
     if not os.path.exists(file_path):
         print(f"Error: The file Path '{file_path}' does not exist", file=sys.stderr)
@@ -22,3 +39,6 @@ def GetSoundFilePath():
     print(f"The file '{file_path}' exists and is valid.")
 
     return file_path
+
+    
+        
