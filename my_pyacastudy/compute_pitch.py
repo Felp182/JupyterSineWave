@@ -1,6 +1,7 @@
 import my_pyacastudy.audio_math_lib as AudioMath
 import tkinter as tk
 from tkinter import filedialog, messagebox
+from waapi import WaapiClient
 import my_pyacastudy.audio_func_lib as AudioFunc
 
 #parser = argparse.ArgumentParser(description="File Path.")
@@ -10,6 +11,20 @@ import my_pyacastudy.audio_func_lib as AudioFunc
 #file_path = args.file_path
 
 #audio_pitch = AudioMath.GetSoundPitch(file_path)
+
+
+def send_pitch_to_wwise(pitch_value):
+    try:
+
+        with WaapiClient() as client:
+            client.call("ak.wwise.core.object.setProperty", {
+                "object": "Object_ID",
+                "property": "property name",
+                "value": pitch_value
+            })
+            print(f"Pitch value {pitch_value} sent to Wwise!")
+    except Exception as e:
+        print (f"Failed to send pitch to WWise: {e}")
 
 def browse_file():
     file_path = filedialog.askopenfile(
@@ -24,7 +39,8 @@ def browse_file():
 def submit():
     file_path = file_entry.get()
     if file_path:
-       AudioFunc.GetAudioFilePitch(file_path)
+      pitch = AudioFunc.GetAudioFilePitch(file_path)
+      send_pitch_to_wwise(pitch)
     else:
         messagebox.showwarning("Input Needed", "Please provide a file path.")
     

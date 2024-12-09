@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.13"
 pyACA = "^0.3.1"
 pytest = "^8.3.4"
+waapi-client = "^0.7.2"
 
 
 [tool.poetry.group.dev.dependencies]
